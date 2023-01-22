@@ -1,0 +1,137 @@
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  display: grid;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.3rem 1rem;
+}
+div.logo img {
+  width: 100px;
+  height: 70px;
+}
+h1 {
+  font-family: "Inter", sans-serif;
+}
+i {
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+.basket-icon {
+  background-color: transparent;
+  border: none;
+  position: relative;
+}
+.badge {
+  font-size: 12px;
+  font-weight: 500;
+  position: absolute;
+  bottom: 30px;
+  right: -5px;
+  border-radius: 50%;
+  height: 14px;
+  width: 20px;
+  padding: 4px 1px;
+  background: rgb(194, 13, 13);
+  color: white;
+}
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 10;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+.modal-content {
+  background-color: white;
+  margin: 10% auto;
+  padding: 1rem;
+  border: 1px solid grey;
+  border-radius: 5px;
+  width: 50%;
+}
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+div.banner {
+  background-image: url("./images/gilles-de-muynck-htsyf4VLCP0-unsplash.jpg");
+  background-size: cover;
+  background-position: center center;
+  height: 35vh;
+}
+
+main {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin: 4rem auto;
+  width: 80%;
+}
+main img {
+  width: 200px;
+  height: 300px;
+}
+div.product {
+  text-align: center;
+  width: 33%;
+  margin-bottom: 3rem;
+}
+span.price {
+  display: block;
+}
+div.product select {
+  height: 3.3rem;
+  padding: 1rem 0.3rem;
+}
+div.product button {
+  background-color: black;
+  color: white;
+  padding: 1rem;
+  font-size: 1rem;
+  margin-top: 1rem;
+}
+footer {
+  background-color: black;
+  color: white;
+  padding: 1rem;
+}
+
+@media screen and (max-width: 1100px) {
+  div.banner {
+    height: 25vh;
+  }
+  div.product {
+    width: 50%;
+  }
+}
+@media screen and (max-width: 750px) {
+  div.banner {
+    height: 20vh;
+  }
+  div.product {
+    width: 100%;
+  }
+}
+@media screen and (max-width: 600px) {
+  div.banner {
+    height: 15vh;
+  }
+  main {
+    width: 95%;
+  }
+  div.product {
+    width: 100%;
+  }
+}
