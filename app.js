@@ -4,12 +4,17 @@ const badge = document.getElementById("badge");
 const modal = document.getElementById("modal");
 const modalClose = document.getElementById("close");
 const basketItems = document.getElementById("basket-items");
-console.log(basketItems);
+const subTotal = document.getElementById("subtotal");
+const tax = document.getElementById("tax");
+const shipping = document.getElementById("shipping");
+const total = document.getElementById("total");
 
-console.log(main);
-
+//* get items from local storage or create a new array
 let basket = JSON.parse(localStorage.getItem("basket")) || [];
 
+//? ------------FUNCTIONS-----------
+
+//* if basket is not empty create basket badge
 const createBadge = () => {
   if (basket.length) {
     badge.style.display = "initial";
@@ -19,6 +24,12 @@ const createBadge = () => {
   }
 };
 
+//* update local storage
+const updateLocalStorage = () => {
+  localStorage.setItem("basket", JSON.stringify(basket));
+};
+
+//* create product and append it to modal container
 const createPoduct = (product) => {
   const { id, image, productName, price, quantity } = product;
 
@@ -37,6 +48,7 @@ const createPoduct = (product) => {
   details.append(pName);
 
   const pPrice = document.createElement("p");
+  pPrice.setAttribute("class", "price");
   pPrice.innerText = price;
   details.append(pPrice);
 
@@ -71,68 +83,38 @@ const createPoduct = (product) => {
 
   li.append(details);
 
-  basketItems.append(li);
+  basketItems.prepend(li);
 };
 
+//* remove product from ui, array and localstorage;
 const removeProduct = (e) => {
   const idAttr = e.target.closest("li").id;
   e.target.closest("li").remove();
   basket = basket.filter((p) => p.id !== idAttr);
-  localStorage.setItem("basket", JSON.stringify(basket));
+  updateLocalStorage();
   createBadge();
   !basket.length && (modal.style.display = "none");
 };
 
+//* calculate tax, shipping and total from given subtotal
+const calculateTotal = (subtotal) => {
+  tax.innerText = `£${(Number(subTotal.innerText.slice(1)) * 0.18).toFixed(2)}`;
+  shipping.innerText = subTotal.innerText.slice(1) != 0 && `£10`;
+  total.innerText = `£${
+    Number(subTotal.innerText.slice(1)) +
+    Number(tax.innerText.slice(1)) +
+    Number(shipping.innerText.slice(1))
+  } `;
+};
+
+//? ---------EVENT LISTENERS AND HANDLERS-----------
+
+//* Invoke createBadge function when padge is loaded
 window.addEventListener("load", () => {
   createBadge();
 });
 
-basketIcon.addEventListener("click", () => {
-  if (basket.length) {
-    modal.style.display = "block";
-    basket.forEach((product) => {
-      createPoduct(product);
-    });
-  }
-});
-modal.addEventListener("click", (e) => {
-  const idAttr = e.target.closest("li").getAttribute("id");
-  if (e.target.classList.contains("remove")) {
-    removeProduct(e);
-  } else if (e.target.classList.contains("minus")) {
-    if (e.target.closest("li").querySelector(".quantity").innerText == 1) {
-      removeProduct(e);
-    } else {
-      e.target.closest("li").querySelector(".quantity").innerText--;
-      basket.forEach((p) => {
-        if (p.id == idAttr) {
-          p.quantity--;
-          e.target.closest("li").querySelector(".pTotalPrice").innerText = `£${
-            Number(p.price.slice(1)) * p.quantity
-          }`;
-        }
-      });
-
-      localStorage.setItem("basket", JSON.stringify(basket));
-    }
-  } else if (e.target.classList.contains("plus")) {
-    e.target.closest("li").querySelector(".quantity").innerText++;
-    basket.forEach((p) => {
-      if (p.id == idAttr) {
-        p.quantity++;
-        e.target.closest("li").querySelector(".pTotalPrice").innerText = `£${
-          Number(p.price.slice(1)) * p.quantity
-        }`;
-      }
-    });
-    localStorage.setItem("basket", JSON.stringify(basket));
-  }
-});
-modalClose.addEventListener("click", () => {
-  modal.style.display = "none";
-  basketItems.innerHTML = "";
-});
-
+// * add product to the array and local storage and update the badge when add button is clicked
 main.addEventListener("click", (e) => {
   if (e.target.classList.contains("add")) {
     const addedProduct = {
@@ -155,7 +137,88 @@ main.addEventListener("click", (e) => {
       flag || basket.push(addedProduct);
     }
     createBadge();
-    localStorage.setItem("basket", JSON.stringify(basket));
+    updateLocalStorage();
   }
   console.log(basket);
+});
+
+//* if array is not empty make modal visible, create and show product and total prices
+basketIcon.addEventListener("click", () => {
+  if (basket.length) {
+    modal.style.display = "block";
+    basket.forEach((product) => {
+      createPoduct(product);
+    });
+    subTotal.innerText = `£${basket.reduce(
+      (acc, c) => acc + Number(c.price.slice(1)) * c.quantity,
+      0
+    )}`;
+    calculateTotal(subTotal);
+  }
+});
+
+// *update product details according the button click
+modal.addEventListener("click", (e) => {
+  const idAttr = e.target.closest("li").getAttribute("id");
+  if (e.target.classList.contains("remove")) {
+    subTotal.innerText = `£${
+      Number(subTotal.innerText.slice(1)) -
+      Number(
+        e.target.closest("li").querySelector(".pTotalPrice").innerText.slice(1)
+      )
+    }`;
+    calculateTotal(subTotal);
+    removeProduct(e);
+  } else if (e.target.classList.contains("minus")) {
+    if (e.target.closest("li").querySelector(".quantity").innerText == 1) {
+      removeProduct(e);
+      subTotal.innerText = `£${
+        Number(subTotal.innerText.slice(1)) -
+        Number(
+          e.target.closest("li").querySelector(".price").innerText.slice(1)
+        )
+      }`;
+      calculateTotal(subTotal);
+    } else {
+      e.target.closest("li").querySelector(".quantity").innerText--;
+      basket.forEach((p) => {
+        if (p.id == idAttr) {
+          p.quantity--;
+          e.target.closest("li").querySelector(".pTotalPrice").innerText = `£${
+            Number(p.price.slice(1)) * p.quantity
+          }`;
+        }
+      });
+      subTotal.innerText = `£${
+        Number(subTotal.innerText.slice(1)) -
+        Number(
+          e.target.closest("li").querySelector(".price").innerText.slice(1)
+        )
+      }`;
+      calculateTotal(subTotal);
+      updateLocalStorage();
+    }
+  } else if (e.target.classList.contains("plus")) {
+    e.target.closest("li").querySelector(".quantity").innerText++;
+    basket.forEach((p) => {
+      if (p.id == idAttr) {
+        p.quantity++;
+        e.target.closest("li").querySelector(".pTotalPrice").innerText = `£${
+          Number(p.price.slice(1)) * p.quantity
+        }`;
+      }
+    });
+    subTotal.innerText = `£${
+      Number(subTotal.innerText.slice(1)) +
+      Number(e.target.closest("li").querySelector(".price").innerText.slice(1))
+    }`;
+    calculateTotal(subTotal);
+    updateLocalStorage();
+  }
+});
+
+//* make modal unvisible and update its innertext when modalclose is clicked
+modalClose.addEventListener("click", () => {
+  modal.style.display = "none";
+  basketItems.innerHTML = "";
 });

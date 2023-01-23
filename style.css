@@ -68,13 +68,6 @@ li {
   margin-bottom: 2rem;
 }
 
-/* li .details {
-  display: flex;
-  flex-direction: column;
-} */
-/* li .details .remove {
-  display: block;
-} */
 li img {
   width: 150px;
   height: 200px;
@@ -93,6 +86,13 @@ li .counter {
   background-color: black;
   color: white;
   padding: 0.5rem;
+  cursor: pointer;
+}
+div.result p {
+  border-top: 1px solid grey;
+  padding-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
 }
 
 div.banner {
