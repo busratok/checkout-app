@@ -3,6 +3,7 @@ body {
   padding: 0;
   box-sizing: border-box;
   display: grid;
+  font-family: "Inter", sans-serif;
 }
 
 header {
@@ -13,9 +14,6 @@ header {
 div.logo img {
   width: 100px;
   height: 70px;
-}
-h1 {
-  font-family: "Inter", sans-serif;
 }
 i {
   font-size: 1.3rem;
@@ -51,11 +49,11 @@ i {
 }
 .modal-content {
   background-color: white;
+  width: 30%;
   margin: 10% auto;
   padding: 1rem;
   border: 1px solid grey;
   border-radius: 5px;
-  width: 50%;
 }
 .close {
   color: #aaa;
@@ -63,6 +61,38 @@ i {
   font-size: 28px;
   font-weight: bold;
   cursor: pointer;
+}
+li {
+  display: flex;
+  gap: 3rem;
+  margin-bottom: 2rem;
+}
+
+/* li .details {
+  display: flex;
+  flex-direction: column;
+} */
+/* li .details .remove {
+  display: block;
+} */
+li img {
+  width: 150px;
+  height: 200px;
+  border-radius: 5px;
+}
+li .counter {
+  display: flex;
+  gap: 3rem;
+  border: 1px solid grey;
+  width: fit-content;
+  padding: 0.5rem;
+  align-items: center;
+}
+.minus,
+.plus {
+  background-color: black;
+  color: white;
+  padding: 0.5rem;
 }
 
 div.banner {
@@ -88,6 +118,9 @@ div.product {
   width: 33%;
   margin-bottom: 3rem;
 }
+div.product p {
+  font-weight: 500;
+}
 span.price {
   display: block;
 }
@@ -95,12 +128,21 @@ div.product select {
   height: 3.3rem;
   padding: 1rem 0.3rem;
 }
-div.product button {
+div.product button,
+button.remove {
   background-color: black;
   color: white;
   padding: 1rem;
   font-size: 1rem;
   margin-top: 1rem;
+  cursor: pointer;
+}
+
+div.product button:hover {
+  opacity: 0.9;
+}
+div.product button:active {
+  transform: translateY(4px);
 }
 footer {
   background-color: black;
@@ -116,12 +158,18 @@ footer {
     width: 50%;
   }
 }
+.modal-content {
+  width: 60%;
+}
 @media screen and (max-width: 750px) {
   div.banner {
     height: 20vh;
   }
   div.product {
     width: 100%;
+  }
+  .modal-content {
+    width: 80%;
   }
 }
 @media screen and (max-width: 600px) {
@@ -133,5 +181,11 @@ footer {
   }
   div.product {
     width: 100%;
+  }
+  .modal-content {
+    width: 80%;
+  }
+  li {
+    flex-direction: column;
   }
 }
